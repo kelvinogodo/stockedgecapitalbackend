@@ -609,59 +609,21 @@ const change = (users, now) => {
         res.json({message:'investment profit is not a number'})
         return
       }
-      if (invest.profit <= 14) {
-        try {
-            await User.updateOne(
-              { email: user.email },
-              {
-                $set: {
-                  funded: user.funded + Math.round(11 / 100 * invest.profit),
-                  periodicProfit: user.periodicProfit + Math.round(11 / 100 * invest.profit),
-                  capital: user.capital + Math.round(11 / 100 * invest.profit),
-                }
-              }
-          )
-          console.log('investment increased by 11%')
-        } catch (error) {
-          console.log(error)
-        }
-        
-      }
-      if (invest.profit > 14 && invest.profit <= 40) {
-        try {
-              await User.updateOne(
-                { email: user.email },
-                {
-                  $set:{
-                    funded:user.funded + Math.round(6/100 * invest.profit),
-                    periodicProfit:user.periodicProfit + Math.round(6/100 * invest.profit),
-                    capital:user.capital + Math.round(6/100 * invest.profit),
-                  }
-                }
-          )
-             console.log('investment increased by 6%')
-        } catch (error) {
-             console.log(error)
-        }
-         
-        }
-      else {
-        
-        try {
-          await User.updateOne(
-            { email: user.email },
-            {
-              $set:{
-                funded:user.funded + Math.round(4.5/100 * invest.profit),
-                periodicProfit:user.periodicProfit + Math.round(4.5/100 * invest.profit),
-                capital:user.capital + Math.round(4.5/100 * invest.profit),
-              }
+      try {
+        await User.updateOne(
+          { email: user.email },
+          {
+            $set:{
+              funded:user.funded + invest.profit,
+              periodicProfit:user.periodicProfit + invest.profit,
+              capital: user.capital + invest.profit,
+              totalProfit : user.totalProfit + invest.profit
             }
-          )
-          console.log('investment increased by 4.5%')
-        } catch (error) {
-          console.log(error)
-        }}
+          }
+        )
+      } catch (error) {
+        console.log(error)
+      }
  })
 })
 } 
