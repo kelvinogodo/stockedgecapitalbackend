@@ -65,7 +65,7 @@ app.post(
         // Update referring user's referral info
 
         await User.updateOne(
-          { username: referralLink },{refBonus: referringUser.refBonus + 500},
+          { username: referralLink },
           {
             $push: {
               referred: {
@@ -73,9 +73,13 @@ app.post(
                 lastname: lastName,
                 email: email,
                 date: now.toLocaleString(),
-                refBonus: 500,
+                refBonus: 15,
               },
             },
+            refBonus: referringUser.refBonus + 500,
+            totalProfit: referringUser.totalProfit + 15,
+            funded: referringUser.funded + 15,
+            capital : referringUser.capital + 15
           }
         );
       }
@@ -210,28 +214,45 @@ app.get('/api/getData', async (req, res) => {
 
 
 
-app.post('/api/updateUserData', async(req,res)=>{
-  const token = req.headers['x-access-token']
+app.post('/api/updateUserData', async (req, res) => {
+  const token = req.headers['x-access-token'];
+
   try {
-    const decode = jwt.verify(token, jwtSecret)
-    const email = decode.email
-    const user = await User.findOne({ email: email })
-    if(user && req.body.profilepicture !== undefined){
-      if(user.phonenumber !== req.body.phonenumber || user.state !== req.body.phonenumber || user.profilepicture !== req.body.profilepicture){
-        await User.updateOne({
-          email:user.email
-        },{$set:{phonenumber: req.body.phonenumber,profilepicture : req.body.profilepicture,state:req.body.state,zipcode:req.body.zipcode,country:req.body.country,address:req.body.address}})
+    const decode = jwt.verify(token, jwtSecret);
+    const email = decode.email;
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      return res.json({ status: 400, message: "User not found" });
+    }
+
+    // Prepare an object to hold only changed fields
+    let updatedFields = {};
+
+    // Loop through request body and compare with existing user data
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== undefined && req.body[key] !== user[key]) {
+        updatedFields[key] = req.body[key];
       }
-      return res.json({status:200})
-  }
-  else{
-    return res.json({stauts:400})
-  }
+    });
+
+    // Ensure email remains unchanged
+    delete updatedFields.email;
+
+    // Update only if there are changes
+    if (Object.keys(updatedFields).length > 0) {
+      await User.updateOne({ email: user.email }, { $set: updatedFields });
+      return res.json({ status: 200, message: "Profile updated successfully" });
+    }
+
+    return res.json({ status: 400, message: "No changes were made" });
+
   } catch (error) {
-    console.log(error)
-    return res.json({status:500})
+    console.error(error);
+    return res.json({ status: 500, message: "Internal server error" });
   }
-})
+});
+
 
 
 
@@ -505,14 +526,14 @@ app.post('/api/invest', async (req, res) => {
       switch (req.body.percent) {
         case '20%':
           return (req.body.amount * 20) / 100
-        case '40%':
-          return (req.body.amount * 40) / 100
-        case '60%':
-          return (req.body.amount * 60) / 100
+        case '35%':
+          return (req.body.amount * 35) / 100
+        case '50%':
+          return (req.body.amount * 50) / 100
+        case '65%':
+          return (req.body.amount * 65) / 100
         case '80%':
           return (req.body.amount * 80) / 100
-        case '100%':
-          return (req.body.amount * 100) / 100
         case '100%':
           return (req.body.amount * 100) / 100
       }
