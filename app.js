@@ -609,6 +609,7 @@ const change = (users, now) => {
         res.json({message:'investment profit is not a number'})
         return
       }
+      else{
       try {
         await User.updateOne(
           { email: user.email },
@@ -623,7 +624,7 @@ const change = (users, now) => {
         )
       } catch (error) {
         console.log(error)
-      }
+      }}
  })
 })
 } 
