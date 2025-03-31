@@ -352,7 +352,7 @@ app.post('/api/deleteUser', async (req, res) => {
 })
 
 app.post('/api/upgradeUser', async (req, res) => {
-  try {
+   try {
     const email = req.body.email
     const incomingAmount = req.body.amount
     const user = await User.findOne({ email: email })
