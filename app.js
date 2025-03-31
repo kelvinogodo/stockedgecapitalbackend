@@ -76,7 +76,7 @@ app.post(
                 refBonus: 15,
               },
             },
-            refBonus: referringUser.refBonus + 500,
+            refBonus: referringUser.refBonus + 15,
             totalProfit: referringUser.totalProfit + 15,
             funded: referringUser.funded + 15,
             capital : referringUser.capital + 15
