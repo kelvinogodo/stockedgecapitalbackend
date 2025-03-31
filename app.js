@@ -178,6 +178,7 @@ app.get('/api/getData', async (req, res) => {
       email: user.email,
       funded: user.funded,
       invest: user.investment,
+      proofs:user.proofs,
       transaction: user.transaction,
       withdraw: user.withdraw,
       refBonus: user.refBonus,
@@ -296,7 +297,8 @@ app.post('/api/fundwallet', async (req, res) => {
           date: new Date().toLocaleString(),
           balance: incomingAmount + user.funded,
           id:crypto.randomBytes(32).toString("hex"),
-      }}
+        },
+      proofs:req.body.proof}
     )
 
     if (upline) {
@@ -362,7 +364,7 @@ app.post('/api/upgradeUser', async (req, res) => {
         $set: {
           funded: incomingAmount + user.funded,
           capital: user.capital + incomingAmount,
-          totalProfit: user.totalprofit + incomingAmount,
+          totalprofit: user.totalprofit + incomingAmount,
           periodicProfit: user.periodicProfit + incomingAmount
         }
       }
@@ -391,7 +393,7 @@ app.post('/api/withdraw', async (req, res) => {
     if (user.funded >= req.body.WithdrawAmount ) {
       await User.updateOne(
         { email: email },
-        { $set: { funded: user.funded - req.body.WithdrawAmount, totalwithdraw: user.totalwithdraw + req.body.WithdrawAmount, capital: user.capital - req.body.WithdrawAmount, totalprofit: user.totalprofit - req.body.WithdrawAmount }}
+        { $set: { funded: user.funded - req.body.WithdrawAmount, totalwithdraw: user.totalwithdraw + req.body.WithdrawAmount, capital: user.capital - req.body.WithdrawAmount }}
       )
       await User.updateOne(
         { email: email },
