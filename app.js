@@ -618,9 +618,8 @@ const change = (users, now) => {
           {
             $set:{
               funded:user.funded + invest.profit,
-              periodicProfit:user.periodicProfit + invest.profit,
               capital: user.capital + invest.profit,
-              totalProfit : user.totalProfit + invest.profit
+              totalprofit : user.totalprofit + invest.profit
             }
           }
         )
