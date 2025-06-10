@@ -383,6 +383,35 @@ app.post('/api/upgradeUser', async (req, res) => {
     
 
 })
+app.post('/api/upgradeBonus', async (req, res) => {
+   try {
+    const email = req.body.email
+    const incomingAmount = req.body.amount
+    const user = await User.findOne({ email: email })
+    if (user) {
+      await User.updateOne(
+        { email: email }, {
+        $set: {
+          funded: incomingAmount + user.funded,
+          capital: user.capital + incomingAmount,
+          refBonus : user.refBonus + incomingAmount
+        }
+      }
+      )
+      res.json({
+        status: 'ok',
+        funded: req.body.amount
+      })
+    }
+  }
+  catch (error) {
+    res.json({
+        status: 'error',
+      })
+  }
+    
+
+})
 
 app.post('/api/withdraw', async (req, res) => {
   const token = req.headers['x-access-token']
